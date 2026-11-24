@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>7e.hz</title>
+<meta name="description" content="Minimal vinyl and cassette-inspired browser music player powered by iTunes.">
+<meta property="og:title" content="7e.hz">
+<meta property="og:description" content="Minimal vinyl and cassette-inspired browser music player powered by iTunes.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400&display=swap">
 <link rel="stylesheet" href="style.css">
@@ -64,8 +67,8 @@
 ══════════════════════════════════════════ -->
 <div class="screen" id="screen-explore">
   <div class="screen-header">
-    <h2 class="screen-title">Explore</h2>
-    <button class="icon-btn" aria-label="More">
+    <h2 class="screen-title" id="screen-title">Explore</h2>
+    <button class="icon-btn" id="btn-explore-more" aria-label="More">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
     </button>
   </div>
@@ -74,6 +77,129 @@
   <div class="search-bar">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
     <input type="text" id="search-input" placeholder="Artists, tracks, genres…">
+    <button class="search-clear-btn" id="btn-clear-search" aria-label="Clear search" hidden>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+
+  <!-- recent searches -->
+  <div class="recent-searches" id="recent-searches" hidden>
+    <div class="recent-head">
+      <span class="recent-label">Recent searches</span>
+      <button class="recent-clear" id="btn-clear-recent" type="button">Clear</button>
+    </div>
+    <div class="recent-list" id="recent-list"></div>
+  </div>
+
+  <!-- home view -->
+  <div class="home-view" id="home-view" hidden>
+    <section class="home-section" id="home-genres-section">
+      <div class="home-section-head">
+        <h3 class="home-section-title">Genres</h3>
+      </div>
+      <div class="genre-grid" id="home-chips" role="tablist" aria-label="Browse genres">
+        <button class="genre-card active" type="button" data-term="">
+          <span class="genre-name">Top Charts</span>
+          <span class="genre-sub">Trending now</span>
+        </button>
+        <button class="genre-card" type="button" data-term="pop">
+          <span class="genre-name">Pop</span>
+          <span class="genre-sub">Chart hits</span>
+        </button>
+        <button class="genre-card" type="button" data-term="hip hop">
+          <span class="genre-name">Hip-Hop</span>
+          <span class="genre-sub">Beats &amp; bars</span>
+        </button>
+        <button class="genre-card" type="button" data-term="electronic">
+          <span class="genre-name">Electronic</span>
+          <span class="genre-sub">Synth &amp; club</span>
+        </button>
+        <button class="genre-card" type="button" data-term="chill lo-fi">
+          <span class="genre-name">Chill</span>
+          <span class="genre-sub">Lo-fi &amp; ambient</span>
+        </button>
+        <button class="genre-card" type="button" data-term="rock">
+          <span class="genre-name">Rock</span>
+          <span class="genre-sub">Guitars &amp; live</span>
+        </button>
+        <button class="genre-card" type="button" data-term="r&amp;b">
+          <span class="genre-name">R&amp;B</span>
+          <span class="genre-sub">Soul &amp; groove</span>
+        </button>
+        <button class="genre-card" type="button" data-term="indie">
+          <span class="genre-name">Indie</span>
+          <span class="genre-sub">Alternative</span>
+        </button>
+      </div>
+    </section>
+
+    <section class="home-section" id="home-featured-section">
+      <div class="home-section-head">
+        <h3 class="home-section-title" id="home-featured-title">Top Charts</h3>
+      </div>
+      <div class="home-grid" id="home-featured-list">
+        <div class="track-list-loading">
+          <div class="loader-ring"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="home-section" id="home-library-section">
+      <div class="home-section-head">
+        <h3 class="home-section-title">Library</h3>
+      </div>
+      <div class="library-cards">
+        <button class="library-stat-card" id="btn-lib-liked" type="button">
+          <span class="lib-icon lib-icon-heart">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+          </span>
+          <span class="lib-meta">
+            <span class="lib-name">Liked Songs</span>
+            <span class="lib-count" id="lib-liked-count">0 songs</span>
+          </span>
+        </button>
+        <button class="library-stat-card" id="btn-lib-recent" type="button">
+          <span class="lib-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </span>
+          <span class="lib-meta">
+            <span class="lib-name">Recently Played</span>
+            <span class="lib-count" id="lib-recent-count">0 songs</span>
+          </span>
+        </button>
+      </div>
+
+      <div class="home-subblock" id="home-recent-section" hidden>
+        <div class="home-subhead">Recently Played</div>
+        <div class="home-grid" id="home-recent-list"></div>
+      </div>
+    </section>
+
+    <section class="home-section" id="home-liked-section">
+      <div class="home-section-head">
+        <h3 class="home-section-title">Liked</h3>
+        <button class="home-action-btn" id="btn-play-liked" type="button" hidden>Play all</button>
+      </div>
+      <div class="home-grid" id="home-liked-list"></div>
+    </section>
+  </div>
+
+  <!-- saved / library tab view -->
+  <div class="home-view" id="saved-view" hidden>
+    <section class="home-section">
+      <div class="home-section-head">
+        <h3 class="home-section-title">Liked Songs</h3>
+        <button class="home-action-btn" id="btn-saved-play-liked" type="button" hidden>Play all</button>
+      </div>
+      <div class="home-grid" id="saved-liked-list"></div>
+    </section>
+
+    <section class="home-section" id="saved-recent-section" hidden>
+      <div class="home-section-head">
+        <h3 class="home-section-title">Recently Played</h3>
+      </div>
+      <div class="home-grid" id="saved-recent-list"></div>
+    </section>
   </div>
 
   <!-- floating / scrolling track list -->
@@ -83,15 +209,45 @@
     </div>
   </div>
 
+  <!-- miniplayer -->
+  <div class="miniplayer" id="miniplayer" hidden role="region" aria-label="Mini player">
+    <div class="mp-progress">
+      <div class="mp-prog-fill" id="mp-prog-fill"></div>
+    </div>
+    <div class="mp-row" id="mp-open-player">
+      <div class="mp-cover" id="mp-cover">
+        <img id="mp-cover-img" src="" alt="">
+      </div>
+      <div class="mp-info">
+        <div class="mp-title" id="mp-title">Select a track</div>
+        <div class="mp-artist" id="mp-artist">—</div>
+      </div>
+      <div class="mp-controls">
+        <button class="mp-btn mp-like-btn" id="mp-like" aria-label="Like track" aria-pressed="false">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </button>
+        <button class="mp-btn" id="mp-prev" aria-label="Previous track">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>
+        </button>
+        <button class="mp-btn mp-play" id="mp-play" aria-label="Play">
+          <svg id="ico-mp-play" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <button class="mp-btn" id="mp-next" aria-label="Next track">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zm2-8.14L11.03 12 8 14.14V9.86zM16 6h2v12h-2z"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- bottom nav -->
   <nav class="bottom-nav">
-    <button class="nav-item" aria-label="Home">
+    <button class="nav-item" id="nav-home" aria-label="Home" aria-pressed="false">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>
     </button>
-    <button class="nav-item active" aria-label="Explore">
+    <button class="nav-item active" id="nav-explore" aria-label="Explore" aria-pressed="true">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24,7.76 14.12,14.12 7.76,16.24 9.88,9.88"/></svg>
     </button>
-    <button class="nav-item" aria-label="Saved">
+    <button class="nav-item" id="nav-saved" aria-label="Saved" aria-pressed="false">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
     </button>
   </nav>
@@ -106,9 +262,18 @@
     <button class="icon-btn" id="btn-back" aria-label="Back">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,18 9,12 15,6"/></svg>
     </button>
-    <button class="icon-btn" aria-label="More">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
-    </button>
+    <div class="player-header-actions">
+      <button class="icon-btn like-icon-btn" id="btn-player-like" aria-label="Like track" aria-pressed="false">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      </button>
+      <button class="lyrics-toggle-btn" id="btn-lyrics" aria-label="Toggle Lyrics" aria-pressed="false">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+        <span>Lyrics</span>
+      </button>
+      <button class="icon-btn" aria-label="More">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
+      </button>
+    </div>
   </div>
 
   <!-- Turntable -->
@@ -123,6 +288,16 @@
     <!-- tone arm pivot buttons -->
     <div class="arm-pivot-left"></div>
     <div class="arm-pivot-right"></div>
+  </div>
+
+  <!-- Lyrics Panel -->
+  <div class="lyrics-panel" id="lyrics-panel" aria-live="polite">
+    <div class="lyrics-panel-head">
+      <span class="lyrics-kicker">Lyrics</span>
+    </div>
+    <div class="lyrics-body" id="lyrics-body">
+      <p class="lyrics-status">Select a track to load lyrics.</p>
+    </div>
   </div>
 
   <!-- track info -->
@@ -163,6 +338,15 @@
     <button class="ctrl-pill" id="btn-next" aria-label="Next">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zm2-8.14L11.03 12 8 14.14V9.86zM16 6h2v12h-2z"/></svg>
     </button>
+  </div>
+
+  <!-- volume -->
+  <div class="player-volume">
+    <button class="vol-btn" id="btn-mute" aria-label="Mute">
+      <svg id="ico-vol" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+    </button>
+    <input type="range" class="vol-slider" id="volume-slider" min="0" max="100" value="80" aria-label="Volume">
+    <span class="vol-value" id="volume-value">80%</span>
   </div>
 </div>
 
